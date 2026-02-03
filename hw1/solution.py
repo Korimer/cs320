@@ -1,6 +1,7 @@
 # pyright: basic
 
 import sys
+from types import LambdaType
 
 class Board:
     def __init__(self,n: int) -> None:
@@ -65,6 +66,15 @@ class Board:
         self._place(point)
         self.forbid_position(point)
 
+    def undo_last_place(self):
+        strips = [
+                self.rows,
+                self.cols,
+                self.diag_a,
+                self.diag_b
+                ]
+        for strip in strips:
+            strip.unset()
 
     def forbid_position(self,point):
         self.old_positions.add(point)
@@ -127,6 +137,7 @@ class HistoricQueue:
 
     def revert(self):
         self._pos = self._checkpoints.pop()
+        print(f"reverted! position is now {self._pos}")
     
     def reset(self):
         self._pos = 0
@@ -189,6 +200,7 @@ class SelfSolvingBoard:
             self._hqueue.checkpoint()
 
     def _revert_checkpoint(self):
+        self._board.undo_last_place()
         self._hqueue.revert()
         self._num_placed -= 1
 
