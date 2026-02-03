@@ -23,6 +23,7 @@ class Board:
         return valid
     
     def _place(self,pnt) -> None:
+        print(f"Placing {pnt}")
         x,y = pnt.tup()
         self.cols.set(x)
         self.rows.set(y)
@@ -59,6 +60,7 @@ class Board:
                 ]
 
     def init_cycle(self,point):
+        print(f"Restarting cycle with point {point}")
         self._create_strips()
         self._place(point)
         self.forbid_position(point)
@@ -99,10 +101,10 @@ class Point:
         return self.x, self.y
 
     def __str__(self) -> str:
-        return f"Point({self.x},{self.y})"
+        return f"Point{repr(self)}"
 
     def __repr__(self) -> str:
-        return str(self)
+        return f"({self.x},{self.y})"
 
 class HistoricQueue:
     def __init__(self,contents):
@@ -120,14 +122,15 @@ class HistoricQueue:
         self._checkpoints.append(self._pos)
 
     def checkout(self):
-        old_checkpoints = self._checkpoints
-        self._pos = 0
-        self._checkpoints = []
-        print(f"checking out. old checkpoints are: {old_checkpoints}")
-        return [ self._inner[i-1] for i in old_checkpoints ]
+        print(f"checking out. old checkpoints are: {self._checkpoints}")
+        return [ self._inner[i-1] for i in self._checkpoints ]
 
     def revert(self):
         self._pos = self._checkpoints.pop()
+    
+    def reset(self):
+        self._pos = 0
+        self._checkpoints = []
     
     def has_checkpoint(self):
         return len(self._checkpoints) != 0
@@ -141,7 +144,7 @@ class SelfSolvingBoard:
         self._num_first_positions = len(self._first_positions)
         self._position_iter = 0
 
-        self._rowcount = board.n+1
+        self._rowcount = board.n
 
         self._num_placed = 0
         self._discovered_solutions = []
@@ -154,14 +157,16 @@ class SelfSolvingBoard:
 
     def _get_first_placement(self):
         self._position_iter += 1
-        return self._first_positions[self._position_iter]
+        return self._first_positions[self._position_iter-1]
     
     def _has_placements(self):
         return self._position_iter < self._num_first_positions
 
     def _find_solution_set(self):
         self._num_placed = 1
+        self._hqueue.reset()
         firstpos = self._get_first_placement()
+        self._board.init_cycle(firstpos)
         discovered_solutions = []
         while True:
             if self._hqueue.has_next():
@@ -179,7 +184,9 @@ class SelfSolvingBoard:
     def _place_one(self):
         to_place = self._hqueue.next()
         was_valid = self._board.try_place(to_place)
-        if was_valid: self._num_placed += 1
+        if was_valid:
+            self._num_placed += 1
+            self._hqueue.checkpoint()
 
     def _revert_checkpoint(self):
         self._hqueue.revert()
