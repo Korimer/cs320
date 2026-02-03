@@ -16,8 +16,8 @@ class Board:
         self.rows = HistoricRow(rows)
 
         diag_count = (4*rows)-2
-        self.diag_a = HistoricRow(diag_count) # \\\
-        self.diag_b = HistoricRow(diag_count) # ///
+        self.diag_a = HistoricRow(diag_count) # ///
+        self.diag_b = HistoricRow(diag_count) # \\\
         
     def try_place(self,pnt) -> bool:
         valid = self.can_place(pnt)
@@ -25,7 +25,6 @@ class Board:
         return valid
     
     def _place(self,pnt) -> None:
-        print(f"  now placing point {pnt}")
         x,y = pnt.tup()
         self.cols.set(x)
         self.rows.set(y)
@@ -34,13 +33,16 @@ class Board:
 
     def can_place(self,pnt) -> bool:
         x,y = pnt.tup()
-        return (
+        
+        tve = (
             not pnt in self.old_positions
             and self.cols.can_set(x)
             and self.rows.can_set(y)
             and self.diag_a.can_set(x+y)
             and self.diag_b.can_set(self.n+x-y)
         )
+
+        return tve
 
     def valid_first_positions(self) -> list[Point]:
         # Because we're on a 2d board, every solution can be mirrored 8 ways
@@ -94,6 +96,9 @@ class Point:
     @override
     def __str__(self) -> str:
         return f"Point({self.x},{self.y})"
+    @override
+    def __repr__(self) -> str:
+        return str(self)
 
 class HistoricQueue:
     def __init__(self,contents):
@@ -105,10 +110,15 @@ class HistoricQueue:
     def next(self):
         self._pos += 1
         return self._inner[self._pos-1]
+    def _set_checkpoint(self,pos):
+        self._checkpoints.append(pos)
+    def checkpoint_prev(self):
+        self._set_checkpoint(self._pos-1)
     def checkout(self):
         old_checkpoints = self._checkpoints
         self._pos = 0
         self._checkpoints = []
+        print(f"checking out. old checkpoints are: {old_checkpoints}")
         return [ self._inner[i] for i in old_checkpoints ]
 
     def revert(self):
@@ -121,16 +131,20 @@ def place_all(
         num_to_place: int
         ):
     board.init_cycle(first_placement)
+    solutions = []
     placed = 1
-    print("root point is: " + str(first_placement))
     while True:
         if placed == num_to_place:
-            return hqueue.checkout() + [first_placement]
+            full_board = hqueue.checkout() + [first_placement]
+            solutions.append(full_board)
+            placed = 1
         if not hqueue.has_next():
             hqueue.checkout()
-            return None
+            return solutions
         did_place = board.try_place(hqueue.next())
-        if did_place: placed += 1
+        if did_place: 
+            placed += 1;
+            hqueue.checkpoint_prev()
 
 
 if True:
@@ -143,5 +157,8 @@ if True:
             for y in range(rowcount)
             ]
     hqueue = HistoricQueue(all_positions)
+    answers = []
     for point in starting_positions:
-        place_all(board,hqueue,point,rowcount)
+        results = place_all(board,hqueue,point,rowcount)
+        answers += results
+    print(answers)
