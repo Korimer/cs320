@@ -1,8 +1,6 @@
 # pyright: basic
 
 import sys
-from typing import override
-
 
 class Board:
     def __init__(self,n: int) -> None:
@@ -89,7 +87,6 @@ class HistoricRow:
         if modified != -1:
             self.full_row[modified] = True
 
-    @override
     def __str__(self) -> str:
         return f"{self.full_row}: {self.history}"
 
@@ -101,10 +98,9 @@ class Point:
     def tup(self) -> tuple[int,int]:
         return self.x, self.y
 
-    @override
     def __str__(self) -> str:
         return f"Point({self.x},{self.y})"
-    @override
+
     def __repr__(self) -> str:
         return str(self)
 
@@ -120,18 +116,15 @@ class HistoricQueue:
         self._pos += 1
         return self._inner[self._pos-1]
 
-    def _set_checkpoint(self,pos):
-        self._checkpoints.append(pos)
-
-    def checkpoint_prev(self):
-        self._set_checkpoint(self._pos-1)
+    def checkpoint(self):
+        self._checkpoints.append(self._pos)
 
     def checkout(self):
         old_checkpoints = self._checkpoints
         self._pos = 0
         self._checkpoints = []
         print(f"checking out. old checkpoints are: {old_checkpoints}")
-        return [ self._inner[i] for i in old_checkpoints ]
+        return [ self._inner[i-1] for i in old_checkpoints ]
 
     def revert(self):
         self._pos = self._checkpoints.pop()
@@ -149,58 +142,56 @@ class SelfSolvingBoard:
         self._position_iter = 0
 
         self._rowcount = board.n+1
-        
 
-    
+        self._num_placed = 0
+        self._discovered_solutions = []
+        
+    def get_all_solutions(self):
+        all_solutions = []
+        while self._has_placements():
+            all_solutions += self._find_solution_set()
+        return all_solutions
+
     def _get_first_placement(self):
         self._position_iter += 1
         return self._first_positions[self._position_iter]
     
     def _has_placements(self):
         return self._position_iter < self._num_first_positions
-    
+
     def _find_solution_set(self):
+        self._num_placed = 1
         firstpos = self._get_first_placement()
+        discovered_solutions = []
+        while True:
+            if self._hqueue.has_next():
+                self._place_one()
+            elif self._hqueue.has_checkpoint():
+                self._revert_checkpoint()
+            else:
+                break
 
+            if self._num_placed == self._rowcount:
+                discovered_solutions.append(self._checkout_solution(firstpos))
+        
+        return discovered_solutions
 
+    def _place_one(self):
+        to_place = self._hqueue.next()
+        was_valid = self._board.try_place(to_place)
+        if was_valid: self._num_placed += 1
 
+    def _revert_checkpoint(self):
+        self._hqueue.revert()
+        self._num_placed -= 1
 
-def place_all(
-        board: Board,
-        hqueue: HistoricQueue,
-        first_placement: Point,
-        num_to_place: int
-    ):
-    board.init_cycle(first_placement)
-    solutions = []
-    placed = 1
-    while True:
-        if placed == num_to_place:
-            full_board = hqueue.checkout() + [first_placement]
-            solutions.append(full_board)
-            placed = 1
-        if hqueue.has_next():
-            place(board,hqueue.next())
-        if not hqueue.has_next():
-            hqueue.checkout()
-            return solutions
-        did_place = board.try_place(hqueue.next())
-        if did_place: 
-            placed += 1;
-            hqueue.checkpoint_prev()
-
-#def place(board,point):
-#            did_place = board.try_place(hqueue.next())
-#            if did_place: 
-#                placed += 1;
-#                hqueue.checkpoint_prev()
-
+    def _checkout_solution(self,first_position):
+        positions = [first_position] + self._hqueue.checkout()
+        self._revert_checkpoint()
+        return positions
 
 if True:
     rowcount = int(sys.argv[1])
     board = Board(rowcount)
     solution = SelfSolvingBoard(board)
-    for point in starting_positions:
-        results = place_all(board,hqueue,point,rowcount)
-        answers += results
-    print(answers)
+    print(solution.get_all_solutions())
