@@ -189,11 +189,11 @@ def place_all(
             placed += 1;
             hqueue.checkpoint_prev()
 
-def place(board,point):
-            did_place = board.try_place(hqueue.next())
-            if did_place: 
-                placed += 1;
-                hqueue.checkpoint_prev()
+#def place(board,point):
+#            did_place = board.try_place(hqueue.next())
+#            if did_place: 
+#                placed += 1;
+#                hqueue.checkpoint_prev()
 
 
 if True:
