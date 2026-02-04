@@ -1,0 +1,3 @@
+def nQueensAll():
+    print("[]")
+    return []

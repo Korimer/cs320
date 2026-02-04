@@ -85,8 +85,7 @@ class Board:
             
         self._old_placements.pop()
 
-def nQueensAll():
-    rowcount = int(sys.argv[0])
+def nQueensAll(rowcount):
     if rowcount < 4: raise ValueError("There exist no solutions for n<.4")
     solutions = []
     board = Board(rowcount)
@@ -102,4 +101,7 @@ def nQueensAll():
 
     _recurse(0,board)
 
-    print(solutions)
+    return solutions
+
+if __name__ == "__main__":
+    print(nQueensAll(int(sys.argv[1])))
