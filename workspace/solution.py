@@ -1,3 +1,3 @@
-def nQueensAll():
+def nQueensAll(N):
     print("[]")
     return []

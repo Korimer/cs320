@@ -103,5 +103,5 @@ def nQueensAll(rowcount):
 
     return solutions
 
-if __name__ == "__main__":
-    print(nQueensAll(int(sys.argv[1])))
+#if __name__ == "__main__":
+#    print(nQueensAll(int(sys.argv[1])))
