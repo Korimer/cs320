@@ -101,7 +101,11 @@ def nQueensAll(rowcount):
 
     _recurse(0,board)
 
-    return solutions
+    return [
+            pnt.tup() 
+            for solution in solutions
+            for pnt in solution
+            ]
 
-#if __name__ == "__main__":
-#    print(nQueensAll(int(sys.argv[1])))
+if __name__ == "__main__":
+    print(nQueensAll(int(sys.argv[1])))
