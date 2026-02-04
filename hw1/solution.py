@@ -16,73 +16,6 @@ class Point:
     def __repr__(self) -> str:
         return f"({self.x},{self.y})"
 
-class Board:
-    def __init__(self,n: int) -> None:
-        self.n = n
-        self._create_strips()
-        self._old_placements = []
-
-    def _create_strips(self):
-        rows = self.n
-        self.cols = HistoricStrip(rows)
-        self.rows = HistoricStrip(rows)
-
-        diag_count = (2*rows)-1
-        self.diag_a = HistoricStrip(diag_count) # ///
-        self.diag_b = HistoricStrip(diag_count) # \\\
-        
-    def try_place(self,pnt) -> bool:
-        valid = self.can_place(pnt)
-        if valid: self._place(pnt)
-        return valid
-    
-    def _place(self,pnt) -> None:
-        self._old_placements.append(pnt)
-        x,y = pnt.tup()
-        self.cols.set(x)
-        self.rows.set(y)
-        self.diag_a.set(x+y)
-        self.diag_b.set(self.n-1+x-y)
-
-    def can_place(self,pnt) -> bool:
-        x,y = pnt.tup()
-        
-        tve = (
-            self.cols.can_set(x)
-            and self.rows.can_set(y)
-            and self.diag_a.can_set(x+y)
-            and self.diag_b.can_set(self.n-1+x-y)
-        )
-
-        return tve
-
-    def valid_first_positions(self) -> list[Point]:
-        # Because we're on a 2d board, every solution can be mirrored 8 ways
-        # ...So, that means we only need to iterate over 1/8th of the board!
-        return [
-               Point(x,y)
-               for x in range((self.n+1)//2)
-               for y in range(0,x+1)
-               ]
-
-    def get_all_positions(self) -> list[Point]:
-        return  [
-                Point(x,y)
-                for x in range(self.n)
-                for y in range(self.n)
-                ]
-    
-    def checkout_placements(self) -> list[Point]:
-        return self._old_placements.copy()
-
-    def undo_last_place(self):
-        self.rows.unset()
-        self.cols.unset()
-        self.diag_a.unset()
-        self.diag_b.unset()
-            
-        self._old_placements.pop()
-
 class HistoricStrip:
     def __init__(self, count: int) -> None:
         self.full_row = [ True ] * count
@@ -98,7 +31,7 @@ class HistoricStrip:
     def can_set(self,n: int) -> bool:
         return self.full_row[n]
 
-    def unset(self):
+    def unset(self) -> None:
         modified = self.history.pop()
         if modified != -1:
             self.full_row[modified] = True
@@ -106,8 +39,55 @@ class HistoricStrip:
     def __str__(self) -> str:
         return f"{self.full_row}: {self.history}"
 
+class Board:
+    def __init__(self,n: int) -> None:
+        self.n = n
+        self._cols = HistoricStrip(n)
+        self._rows = HistoricStrip(n)
+
+        diag_count = (2*n)-1
+        self._diag_a = HistoricStrip(diag_count) # ///
+        self._diag_b = HistoricStrip(diag_count) # \\\
+
+        self._old_placements = []
+
+    def try_place(self,point) -> bool:
+        valid = self.can_place(point)
+        if valid: self._place(point)
+        return valid
+    
+    def _place(self,point) -> None:
+        self._old_placements.append(point)
+        x,y = point.tup()
+        self._cols.set(x)
+        self._rows.set(y)
+        self._diag_a.set(x+y)
+        self._diag_b.set(self.n-1+x-y)
+
+    def can_place(self,point) -> bool:
+        x,y = point.tup()
+        
+        return (
+            self._cols.can_set(x)
+            and self._rows.can_set(y)
+            and self._diag_a.can_set(x+y)
+            and self._diag_b.can_set(self.n-1+x-y)
+        )
+    
+    def checkout_placements(self) -> list[Point]:
+        return self._old_placements.copy()
+
+    def undo_last_place(self):
+        self._rows.unset()
+        self._cols.unset()
+        self._diag_a.unset()
+        self._diag_b.unset()
+            
+        self._old_placements.pop()
+
 def nQueensAll():
-    rowcount = int(sys.argv[1])
+    rowcount = int(sys.argv[0])
+    if rowcount < 4: raise ValueError("There exist no solutions for n<.4")
     solutions = []
     board = Board(rowcount)
 
