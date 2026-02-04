@@ -1,7 +1,6 @@
 # pyright: basic
 
 import sys
-from types import LambdaType
 
 class Board:
     def __init__(self,n: int) -> None:
@@ -14,7 +13,7 @@ class Board:
         self.cols = HistoricRow(rows)
         self.rows = HistoricRow(rows)
 
-        diag_count = (4*rows)-2
+        diag_count = (2*rows)-1
         self.diag_a = HistoricRow(diag_count) # ///
         self.diag_b = HistoricRow(diag_count) # \\\
         
@@ -24,7 +23,6 @@ class Board:
         return valid
     
     def _place(self,pnt) -> None:
-        print(f"Placing {pnt}")
         x,y = pnt.tup()
         self.cols.set(x)
         self.rows.set(y)
@@ -61,7 +59,6 @@ class Board:
                 ]
 
     def init_cycle(self,point):
-        print(f"Restarting cycle with point {point}")
         self._create_strips()
         self._place(point)
         self.forbid_position(point)
@@ -132,12 +129,10 @@ class HistoricQueue:
         self._checkpoints.append(self._pos)
 
     def checkout(self):
-        print(f"checking out. old checkpoints are: {self._checkpoints}")
         return [ self._inner[i-1] for i in self._checkpoints ]
 
     def revert(self):
         self._pos = self._checkpoints.pop()
-        print(f"reverted! position is now {self._pos}")
     
     def reset(self):
         self._pos = 0
