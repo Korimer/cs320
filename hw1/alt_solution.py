@@ -10,12 +10,12 @@ class Board:
 
     def _create_strips(self):
         rows = self.n
-        self.cols = HistoricRow(rows)
-        self.rows = HistoricRow(rows)
+        self.cols = HistoricStrip(rows)
+        self.rows = HistoricStrip(rows)
 
         diag_count = (2*rows)-1
-        self.diag_a = HistoricRow(diag_count) # ///
-        self.diag_b = HistoricRow(diag_count) # \\\
+        self.diag_a = HistoricStrip(diag_count) # ///
+        self.diag_b = HistoricStrip(diag_count) # \\\
         
     def try_place(self,pnt) -> bool:
         valid = self.can_place(pnt)
@@ -58,9 +58,8 @@ class Board:
                 for y in range(self.n)
                 ]
 
-    def init_cycle(self,point):
+    def reset_board(self):
         self._create_strips()
-        self._place(point)
 
     def undo_last_place(self):
         strips = [
@@ -72,7 +71,7 @@ class Board:
         for strip in strips:
             strip.unset()
 
-class HistoricRow:
+class HistoricStrip:
     def __init__(self, count: int) -> None:
         self.full_row = [ True ] * count
         self.history = []

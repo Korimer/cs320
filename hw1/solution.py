@@ -13,7 +13,7 @@ class Board:
         self.cols = HistoricRow(rows)
         self.rows = HistoricRow(rows)
 
-        diag_count = (2*rows)-1
+        diag_count = (4*rows)-2
         self.diag_a = HistoricRow(diag_count) # ///
         self.diag_b = HistoricRow(diag_count) # \\\
         
@@ -204,7 +204,7 @@ class SelfSolvingBoard:
         self._revert_checkpoint()
         return positions
 
-if True:
+def nQueensAll():
     rowcount = int(sys.argv[1])
     board = Board(rowcount)
     solution = SelfSolvingBoard(board)
