@@ -51,7 +51,7 @@ class Board:
             self.cols.can_set(x)
             and self.rows.can_set(y)
             and self.diag_a.can_set(x+y)
-            and self.diag_b.can_set(self.n+x-y)
+            and self.diag_b.can_set(self.n-1+x-y)
         )
 
         return tve
@@ -76,14 +76,11 @@ class Board:
         return self._old_placements.copy()
 
     def undo_last_place(self):
-        strips = [
-                self.rows,
-                self.cols,
-                self.diag_a,
-                self.diag_b
-                ]
-        for strip in strips:
-            strip.unset()
+        self.rows.unset()
+        self.cols.unset()
+        self.diag_a.unset()
+        self.diag_b.unset()
+            
         self._old_placements.pop()
 
 class HistoricStrip:
