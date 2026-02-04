@@ -2,11 +2,25 @@
 
 import sys
 
+class Point:
+    def __init__(self,x: int, y: int) -> None:
+        self.x = x
+        self.y = y
+
+    def tup(self) -> tuple[int,int]:
+        return self.x, self.y
+
+    def __str__(self) -> str:
+        return f"Point{repr(self)}"
+
+    def __repr__(self) -> str:
+        return f"({self.x},{self.y})"
+
 class Board:
     def __init__(self,n: int) -> None:
         self.n = n
         self._create_strips()
-        self.old_positions = set()
+        self._old_placements = []
 
     def _create_strips(self):
         rows = self.n
@@ -23,21 +37,21 @@ class Board:
         return valid
     
     def _place(self,pnt) -> None:
+        self._old_placements.append(pnt)
         x,y = pnt.tup()
         self.cols.set(x)
         self.rows.set(y)
         self.diag_a.set(x+y)
-        self.diag_b.set(1+self.n+x-y)
+        self.diag_b.set(self.n-1+x-y)
 
     def can_place(self,pnt) -> bool:
         x,y = pnt.tup()
         
         tve = (
-            not pnt in self.old_positions
-            and self.cols.can_set(x)
+            self.cols.can_set(x)
             and self.rows.can_set(y)
             and self.diag_a.can_set(x+y)
-            and self.diag_b.can_set(1+self.n+x-y)
+            and self.diag_b.can_set(self.n+x-y)
         )
 
         return tve
@@ -57,9 +71,9 @@ class Board:
                 for x in range(self.n)
                 for y in range(self.n)
                 ]
-
-    def reset_board(self):
-        self._create_strips()
+    
+    def checkout_placements(self) -> list[Point]:
+        return self._old_placements.copy()
 
     def undo_last_place(self):
         strips = [
@@ -70,6 +84,7 @@ class Board:
                 ]
         for strip in strips:
             strip.unset()
+        self._old_placements.pop()
 
 class HistoricStrip:
     def __init__(self, count: int) -> None:
@@ -94,16 +109,23 @@ class HistoricStrip:
     def __str__(self) -> str:
         return f"{self.full_row}: {self.history}"
 
-class Point:
-    def __init__(self,x: int, y: int) -> None:
-        self.x = x
-        self.y = y
+def nQueensAll():
+    rowcount = int(sys.argv[1])
+    solutions = []
+    board = Board(rowcount)
 
-    def tup(self) -> tuple[int,int]:
-        return self.x, self.y
+    def _recurse(row,board: Board):
+        if row == rowcount:
+            solutions.append(board.checkout_placements())
+            return
+        for col in range(rowcount):
+            if board.try_place(Point(row,col)):
+                _recurse(row+1,board)
+                board.undo_last_place()
 
-    def __str__(self) -> str:
-        return f"Point{repr(self)}"
+    _recurse(0,board)
 
-    def __repr__(self) -> str:
-        return f"({self.x},{self.y})"
+    print(solutions)
+
+nQueensAll()
+
