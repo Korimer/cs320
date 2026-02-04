@@ -102,9 +102,8 @@ def nQueensAll(rowcount):
     _recurse(0,board)
 
     return [
-            pnt.tup() 
+            [ pnt.tup() for pnt in solution ]
             for solution in solutions
-            for pnt in solution
             ]
 
 if __name__ == "__main__":
