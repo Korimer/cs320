@@ -83,7 +83,7 @@ class Board:
         self._cols.unset()
         self._diag_a.unset()
         self._diag_b.unset()
- 
+
         self._old_placements.pop()
 
 
