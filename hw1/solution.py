@@ -15,6 +15,7 @@ class Point:
     def __repr__(self) -> str:
         return f"({self.x},{self.y})"
 
+
 class HistoricStrip:
     def __init__(self, count: int) -> None:
         self.full_row = [True] * count
@@ -46,19 +47,20 @@ class Board:
         self._rows = HistoricStrip(n)
 
         diag_count = (2*n)-1
-        self._diag_a = HistoricStrip(diag_count) # ///
-        self._diag_b = HistoricStrip(diag_count) # \\\
+        self._diag_a = HistoricStrip(diag_count)  # ///
+        self._diag_b = HistoricStrip(diag_count)  # \\\
 
         self._old_placements = []
 
     def try_place(self, point) -> bool:
         valid = self.can_place(point)
-        if valid: self._place(point)
+        if valid:
+            self._place(point)
         return valid
-    
+
     def _place(self, point) -> None:
         self._old_placements.append(point)
-        x,y = point.tup()
+        x, y = point.tup()
         self._cols.set(x)
         self._rows.set(y)
         self._diag_a.set(x+y)
@@ -81,8 +83,9 @@ class Board:
         self._cols.unset()
         self._diag_a.unset()
         self._diag_b.unset()
-            
+ 
         self._old_placements.pop()
+
 
 def nQueensAll(rowcount):
     if rowcount < 4:
