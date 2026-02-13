@@ -18,7 +18,7 @@ class NodeData:
 
     @override
     def __str__(self) -> str:
-        return f"({self._val} -> {self._l}, {self._r}"
+        return f"({self._val} -> {self._l}, {self._r})"
 
 
 class TreeNode:
@@ -46,4 +46,3 @@ t.insert("bye...")
 
 if __name__ == "main":
     print("lol")
-print(__name__)
