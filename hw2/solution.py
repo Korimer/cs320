@@ -47,6 +47,11 @@ class AsIfATree:
     def __len__(self) -> int:
         return self.len
             
+    def remove(self,val):
+        if pos := self.find(val) != -1:
+            self.core[pos] = None
+            self.remove(self.childOf(pos,Direction.Left))
+            self.remove(self.childOf(pos,Direction.Right))
 
 class Direction(Enum):
     Left = 1
