@@ -10,7 +10,7 @@ class Direction(Enum):
 if __name__ == "__main__":
     print("lol")
 
-def childOf(arr, nodenum: int, direction: Direction) -> int:
+def childOf(nodenum: int, direction: Direction) -> int:
     return (nodenum*2) + (direction.value)
 
 def fillTo(arr,minsize: int):
@@ -39,7 +39,7 @@ def find(arr,val,allow_empty=False):
             return pos
 
         direction = Direction.Left if val < arr[pos] else Direction.Right
-        nextpos = childOf(arr,pos,direction)
+        nextpos = childOf(pos,direction)
         return findhelper(nextpos)
 
     return findhelper(0)
@@ -50,8 +50,8 @@ def insert(arr,val):
 def remove(arr,val):
     if (pos := find(arr,val)) != -1:
         arr[pos] = None
-        remove(arr,childOf(arr,pos,Direction.Left))
-        remove(arr,childOf(arr,pos,Direction.Right))
+        remove(arr,childOf(pos,Direction.Left))
+        remove(arr,childOf(pos,Direction.Right))
 
 l = []
 
