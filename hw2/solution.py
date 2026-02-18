@@ -54,28 +54,31 @@ def insert(arr, val):
     arr[find(arr, val, allow_empty=True)] = val
 
 
-def findLeftmost(arr, pos):
-    cur = prev = childOf(arr, pos, Direction.Right)
+def findSuccessor(arr,pos):
+    cur = prev = childOf(pos, Direction.Right)
+    if safeIndex(arr,cur) == None:
+        return -1
     while safeIndex(arr, cur) != None:
         prev = cur
-        cur = childOf(arr, cur, Direction.Left)
+        cur = childOf(cur, Direction.Left)
     return prev
 
 
 def remove(arr, val):
-    if (pos := find(arr, val)) != -1:
-        arr[pos] = None
-        replacement = findLeftmost(arr, pos)
-        # lchild = childOf(pos, Direction.Left)
-        # rchild = childOf(pos, Direction.Right)
-        # if (lval := safeIndex(arr, lchild)) != None:
-        #    remove(arr, lchild)
-        #    insert(arr, lval)
-        # if (rval := safeIndex(arr, rchild)) != None:
-        #    remove(arr, rchild)
-        #    insert(arr, rval)
-        return True
-    return False
+    if (pos := find(arr, val)) == -1:
+        return False
+    replacement = findSuccessor(arr, pos)
+    if replacement != -1:
+        childind = childOf(pos,Direction.Right)
+        replacementchild = safeIndex(arr,childind)
+        remove(arr,childind)
+        arr[pos] = arr[replacement]
+    else:
+        replacementchild = None
+    print(f"replacementchild is {replacementchild}")
+    arr[replacement] = replacementchild
+    trim(arr)
+    return True
 
 
 def checkNone(k, t):
@@ -108,3 +111,15 @@ def deleteKey(k, t):
         raise LookupError("not in tree")
     else:
         return t
+
+
+
+
+tree = [50, 30, 70, 20, 40, 60, 80]
+print("start:")
+print(tree)
+print("expected")
+print( [20, 30, 40, 60, 70, 80] )
+deleteKey(50,tree)
+print("got")
+print(tree)
