@@ -7,15 +7,15 @@ class Direction(Enum):
     Left = 1
     Right = 2
 
-if __name__ == "__main__":
-    print("lol")
-
 def childOf(nodenum: int, direction: Direction) -> int:
     return (nodenum*2) + (direction.value)
 
+def safeIndex(arr,index):
+    return None if len(arr) <= index else arr[index]
+
 def fillTo(arr,minsize: int):
     toappend = max(0,minsize-len(arr)+1)
-    arr += [ None ] * toappend
+    arr += [ None ] * toappend # This is a no-op if toappend is 0
 
 def trim(arr):
     while len(arr) != 0:
@@ -47,25 +47,47 @@ def find(arr,val,allow_empty=False):
 def insert(arr,val):
     arr[find(arr,val,allow_empty=True)] = val
 
+def findLeftmost(arr,pos):
+    cur = prev = childOf(arr,pos,Direction.Right)
+    while safeIndex(arr,cur) != None:
+        prev = cur
+        cur = childOf(arr,cur,Direction.Left)
+    return prev
+
 def remove(arr,val):
     if (pos := find(arr,val)) != -1:
         arr[pos] = None
-        remove(arr,childOf(pos,Direction.Left))
-        remove(arr,childOf(pos,Direction.Right))
+        replacement = findLeftmost(arr,pos)        
+        #lchild = childOf(pos,Direction.Left)
+        #rchild = childOf(pos,Direction.Right)
+        #if (lval := safeIndex(arr,lchild)) != None:
+        #    remove(arr,lchild)
+        #    insert(arr,lval)
+        #if (rval := safeIndex(arr,rchild)) != None:
+        #    remove(arr,rchild)
+        #    insert(arr,rval)
+        return True
+    return False
 
-l = []
+def checkNone(t):
+    if t == None:
+        raise ValueError("null key")
 
-insert(l,10)
-insert(l,5)
-insert(l,15)
-insert(l,14)
-print(l)
-remove(l,14)
-print(l)
-trim(l)
-print(l)
-print("removed 14 and trimmed")
-remove(l,15)
-print(l)
-trim(l)
-print(l)
+def findKey(k,t):
+    checkNone(t)
+    res = find(t,k,allow_empty=False)
+    if res == -1:
+        raise LookupError("not in tree")
+    return res
+
+def addKey(k,t):
+    checkNone(t)
+    insert(t,k)
+    return t
+
+def deleteKey(k,t):
+    checkNone(t)
+    if not remove(t,k):
+        raise LookupError("not in tree")
+    else:
+        return t
