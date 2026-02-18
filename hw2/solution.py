@@ -66,19 +66,19 @@ def remove(arr, val):
     if (pos := find(arr, val)) != -1:
         arr[pos] = None
         replacement = findLeftmost(arr, pos)
-        # lchild = childOf(pos,Direction.Left)
-        # rchild = childOf(pos,Direction.Right)
-        # if (lval := safeIndex(arr,lchild)) != None:
-        #    remove(arr,lchild)
-        #    insert(arr,lval)
-        # if (rval := safeIndex(arr,rchild)) != None:
-        #    remove(arr,rchild)
-        #    insert(arr,rval)
+        # lchild = childOf(pos, Direction.Left)
+        # rchild = childOf(pos, Direction.Right)
+        # if (lval := safeIndex(arr, lchild)) != None:
+        #    remove(arr, lchild)
+        #    insert(arr, lval)
+        # if (rval := safeIndex(arr, rchild)) != None:
+        #    remove(arr, rchild)
+        #    insert(arr, rval)
         return True
     return False
 
 
-def checkNone(k,t):
+def checkNone(k, t):
     if k == None:
         raise ValueError("null key")
     if t == None:
@@ -86,7 +86,7 @@ def checkNone(k,t):
 
 
 def findKey(k, t):
-    checkNone(k,t)
+    checkNone(k, t)
     res = find(t, k, allow_empty=False)
     if res == -1:
         raise LookupError("not in tree")
@@ -94,7 +94,7 @@ def findKey(k, t):
 
 
 def addKey(k, t):
-    checkNone(k,t)
+    checkNone(k, t)
     try:
         insert(t, k)
     except TypeError:
@@ -103,7 +103,7 @@ def addKey(k, t):
 
 
 def deleteKey(k, t):
-    checkNone(k,t)
+    checkNone(k, t)
     if not remove(t, k):
         raise LookupError("not in tree")
     else:
