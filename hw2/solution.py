@@ -67,16 +67,15 @@ def findSuccessor(arr,pos):
 def remove(arr, val):
     if (pos := find(arr, val)) == -1:
         return False
-    replacement = findSuccessor(arr, pos)
-    if replacement != -1:
-        childind = childOf(pos,Direction.Right)
-        replacementchild = safeIndex(arr,childind)
-        remove(arr,childind)
-        arr[pos] = arr[replacement]
-    else:
-        replacementchild = None
-    print(f"replacementchild is {replacementchild}")
-    arr[replacement] = replacementchild
+    lchild = safeIndex(arr,childOf(pos,Direction.Left))
+    rchild = safeIndex(arr,childOf(pos,Direction.Right))
+    print(f"lchild is {lchild}")
+    print(f"rchild is {rchild}")
+    if lchild != None: remove(arr,lchild)
+    if rchild != None: remove(arr,rchild)
+    arr[pos] = None
+    if lchild != None: insert(arr,lchild)
+    if rchild != None: insert(arr,rchild)
     trim(arr)
     return True
 
