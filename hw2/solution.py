@@ -24,7 +24,7 @@ def fillTo(arr, minsize: int):
 
 def trim(arr):
     while len(arr) != 0:
-        if arr[-1] == None:
+        if arr[-1] is None:
             arr.pop()
         else:
             break
@@ -35,9 +35,9 @@ def find(arr, val, allow_empty=False):
     def findhelper(pos: int) -> int:
         if allow_empty:
             fillTo(arr, pos)
-            if arr[pos] == None:
+            if arr[pos] is None:
                 return pos
-        elif pos >= len(arr) or arr[pos] == None:
+        elif pos >= len(arr) or arr[pos] is None:
             return -1
 
         if val == arr[pos]:
@@ -54,11 +54,11 @@ def insert(arr, val):
     arr[find(arr, val, allow_empty=True)] = val
 
 
-def findSuccessor(arr,pos):
+def findSuccessor(arr, pos):
     cur = prev = childOf(pos, Direction.Right)
-    if safeIndex(arr,cur) == None:
+    if safeIndex(arr, cur) is None:
         return -1
-    while safeIndex(arr, cur) != None:
+    while safeIndex(arr, cur) is not None:
         prev = cur
         cur = childOf(cur, Direction.Left)
     return prev
@@ -67,23 +67,23 @@ def findSuccessor(arr,pos):
 def remove(arr, val):
     if (pos := find(arr, val)) == -1:
         return False
-    lchild = safeIndex(arr,childOf(pos,Direction.Left))
-    rchild = safeIndex(arr,childOf(pos,Direction.Right))
+    lchild = safeIndex(arr, childOf(pos,Direction.Left))
+    rchild = safeIndex(arr, childOf(pos,Direction.Right))
     print(f"lchild is {lchild}")
     print(f"rchild is {rchild}")
-    if lchild != None: remove(arr,lchild)
-    if rchild != None: remove(arr,rchild)
+    if lchild is not None: remove(arr, lchild)
+    if rchild is not None: remove(arr, rchild)
     arr[pos] = None
-    if lchild != None: insert(arr,lchild)
-    if rchild != None: insert(arr,rchild)
+    if lchild is not None: insert(arr, lchild)
+    if rchild is not None: insert(arr, rchild)
     trim(arr)
     return True
 
 
 def checkNone(k, t):
-    if k == None:
+    if k is None:
         raise ValueError("null key")
-    if t == None:
+    if t is None:
         raise ValueError("no tree")
 
 
@@ -114,11 +114,11 @@ def deleteKey(k, t):
 
 
 
-tree = [50, 30, 70, 20, 40, 60, 80]
-print("start:")
-print(tree)
-print("expected")
-print( [20, 30, 40, 60, 70, 80] )
-deleteKey(50,tree)
-print("got")
-print(tree)
+#tree = [50, 30, 70, 20, 40, 60, 80]
+#print("start:")
+#print(tree)
+#print("expected")
+#print( [20, 30, 40, 60, 70, 80] )
+#deleteKey(50, tree)
+#print("got")
+#print(tree)
