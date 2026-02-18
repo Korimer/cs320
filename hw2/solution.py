@@ -1,67 +1,71 @@
+#pyright: basic
+
 from __future__ import annotations
 from enum import Enum
-
-
-if __name__ == "__main__":
-    print("lol")
-
-class AsIfATree:
-    def __init__(self) -> None:
-        self.core = []
-        self.len = 0
-
-    def height(self) -> int:
-        return 0
-
-    def width(self) -> int:
-        return 1
-
-    def childOf(self, nodenum: int, direction: Direction) -> int:
-        return (nodenum*2) + (direction.value)
-
-    def find(self,val,populate_on_oob=False):
-
-        def findhelper(pos: int,val) -> int:
-            if populate_on_oob:
-                self.fillTo(pos)
-            elif pos < len(self): 
-                return -1
-
-            if self.core[pos] == None:
-                return pos
-            else:
-                direction = Direction.Left if self.core[pos] < val else Direction.Right
-                nextpos = self.childOf(pos,direction)
-                return findhelper(nextpos,val)
-
-        return findhelper(0,val)
-
-    def insert(self,val):
-        self.core[self.find(val,populate_on_oob=True)] = val
-
-    def fillTo(self,minsize: int):
-        toappend = max(0,minsize-len(self)+1)
-        self.len += toappend
-        self.core += [ None ] * toappend
-
-    def __len__(self) -> int:
-        return self.len
-            
-    def remove(self,val):
-        if pos := self.find(val) != -1:
-            self.core[pos] = None
-            self.remove(self.childOf(pos,Direction.Left))
-            self.remove(self.childOf(pos,Direction.Right))
 
 class Direction(Enum):
     Left = 1
     Right = 2
 
+if __name__ == "__main__":
+    print("lol")
 
-tree = AsIfATree()
+def childOf(arr, nodenum: int, direction: Direction) -> int:
+    return (nodenum*2) + (direction.value)
 
-tree.insert(1)
-tree.insert(2)
-tree.insert(5)
-tree.insert(-1)
-print(tree.core)
+def fillTo(arr,minsize: int):
+    toappend = max(0,minsize-len(arr)+1)
+    arr += [ None ] * toappend
+
+def trim(arr):
+    while len(arr) != 0:
+        if arr[-1] == None:
+            arr.pop()
+        else:
+            break
+    return arr
+
+def find(arr,val,allow_empty=False):
+
+    def findhelper(pos: int) -> int:
+        if allow_empty:
+            fillTo(arr,pos)
+            if arr[pos] == None:
+                return pos
+        elif pos >= len(arr) or arr[pos] == None: 
+            return -1
+        
+        if val == arr[pos]:
+            return pos
+
+        direction = Direction.Left if val < arr[pos] else Direction.Right
+        nextpos = childOf(arr,pos,direction)
+        return findhelper(nextpos)
+
+    return findhelper(0)
+
+def insert(arr,val):
+    arr[find(arr,val,allow_empty=True)] = val
+
+def remove(arr,val):
+    if (pos := find(arr,val)) != -1:
+        arr[pos] = None
+        remove(arr,childOf(arr,pos,Direction.Left))
+        remove(arr,childOf(arr,pos,Direction.Right))
+
+l = []
+
+insert(l,10)
+insert(l,5)
+insert(l,15)
+insert(l,14)
+print(l)
+remove(l,14)
+print(l)
+trim(l)
+print(l)
+print("removed 14 and trimmed")
+remove(l,15)
+print(l)
+trim(l)
+print(l)
