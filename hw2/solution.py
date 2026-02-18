@@ -78,13 +78,15 @@ def remove(arr, val):
     return False
 
 
-def checkNone(t):
-    if t == None:
+def checkNone(k,t):
+    if k == None:
         raise ValueError("null key")
+    if t == None:
+        raise ValueError("no tree")
 
 
 def findKey(k, t):
-    checkNone(t)
+    checkNone(k,t)
     res = find(t, k, allow_empty=False)
     if res == -1:
         raise LookupError("not in tree")
@@ -92,13 +94,16 @@ def findKey(k, t):
 
 
 def addKey(k, t):
-    checkNone(t)
-    insert(t, k)
+    checkNone(k,t)
+    try:
+        insert(t, k)
+    except TypeError:
+        raise Exception("tree error")
     return t
 
 
 def deleteKey(k, t):
-    checkNone(t)
+    checkNone(k,t)
     if not remove(t, k):
         raise LookupError("not in tree")
     else:
