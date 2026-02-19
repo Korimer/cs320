@@ -67,12 +67,12 @@ def findSuccessor(arr, pos):
 def remove(arr, val):
     if (pos := find(arr, val)) == -1:
         return False
-    
+
     replacementind = findSuccessor(arr, pos)
     if replacementind == -1:
         arr[pos] = None
         return True
-    
+
     replacementval = arr[replacementind]
     arr[pos] = replacementval
 
@@ -80,7 +80,6 @@ def remove(arr, val):
     if replacementchild is not None:
         remove(arr, replacementchild)
     arr[replacementind] = replacementchild
-
 
     trim(arr)
     return True
@@ -122,4 +121,3 @@ def deleteKey(k, t):
             return t
     except TypeError:
         raise Exception("tree error")
-
