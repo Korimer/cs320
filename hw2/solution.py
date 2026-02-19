@@ -65,7 +65,6 @@ def findSuccessor(arr, pos):
 
 
 def remove(arr, val):
-    print(f"initiating removal of {val}, arr is {arr}")
     if (pos := find(arr, val)) == -1:
         return False
     
@@ -77,9 +76,9 @@ def remove(arr, val):
     replacementval = arr[replacementind]
     arr[pos] = replacementval
 
-    replacementchild = safeIndex(arr,childOf(replacementind,Direction.Right))
+    replacementchild = safeIndex(arr, childOf(replacementind, Direction.Right))
     if replacementchild is not None:
-        remove(arr,replacementchild)
+        remove(arr, replacementchild)
     arr[replacementind] = replacementchild
 
 
@@ -96,9 +95,12 @@ def checkNone(k, t):
 
 def findKey(k, t):
     checkNone(k, t)
-    res = find(t, k, allow_empty=False)
-    if res == -1:
-        raise LookupError("not in tree")
+    try:
+        res = find(t, k, allow_empty=False)
+        if res == -1:
+            raise LookupError("not in tree")
+    except TypeError:
+        raise Exception("tree error")
     return res
 
 
@@ -113,19 +115,11 @@ def addKey(k, t):
 
 def deleteKey(k, t):
     checkNone(k, t)
-    if not remove(t, k):
-        raise LookupError("not in tree")
-    else:
-        return t
+    try:
+        if not remove(t, k):
+            raise LookupError("not in tree")
+        else:
+            return t
+    except TypeError:
+        raise Exception("tree error")
 
-
-
-
-tree = [50, 30, 70, 20, 40, 60, 80]
-print("start:")
-print(tree)
-print("expected")
-print( [20, 30, 40, 60, 70, 80] )
-deleteKey(50, tree)
-print("got")
-print(tree)
