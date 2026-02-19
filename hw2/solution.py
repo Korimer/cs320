@@ -69,8 +69,6 @@ def remove(arr, val):
         return False
     lchild = safeIndex(arr, childOf(pos,Direction.Left))
     rchild = safeIndex(arr, childOf(pos,Direction.Right))
-    print(f"lchild is {lchild}")
-    print(f"rchild is {rchild}")
     if lchild is not None: remove(arr, lchild)
     if rchild is not None: remove(arr, rchild)
     arr[pos] = None
@@ -114,11 +112,11 @@ def deleteKey(k, t):
 
 
 
-#tree = [50, 30, 70, 20, 40, 60, 80]
-#print("start:")
-#print(tree)
-#print("expected")
-#print( [20, 30, 40, 60, 70, 80] )
-#deleteKey(50, tree)
-#print("got")
-#print(tree)
+tree = [50, 30, 70, 20, 40, 60, 80]
+print("start:")
+print(tree)
+print("expected")
+print( [20, 30, 40, 60, 70, 80] )
+deleteKey(50, tree)
+print("got")
+print(tree)
