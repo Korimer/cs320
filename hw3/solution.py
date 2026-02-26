@@ -16,9 +16,9 @@ def countPermStr(string1: str, string2: str):
     charsbase = chars.copy()
 
     for char in string1:
+        encountered += 1
         if char in chars:
             chars.subtract(char)
-            encountered += 1
             count = chars.get(char)
             if count != None and count >= 0:
                 matches += 1
