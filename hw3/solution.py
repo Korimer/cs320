@@ -1,32 +1,37 @@
-#pyright: basic
+# pyright: basic
 
 from queue import Queue
+from collections import Counter
 
-def dequeueInto(q: Queue, chrmap: dict):
+
+def dequeueInto(q: Queue, chrmap: Counter):
     chrmap[q.get()] += 1
+    
 
 def countPermStr(string1: str, string2: str):
+    if string2 == "":
+        raise ValueError()
+
     len2 = len(string2)
-    chars = {}
+    chars = Counter(string2)
     encountered = Queue()
     matches = 0
     totalcount = 0
-    for char in string2:
-        chars.setdefault(char,0)
-        chars[char] += 1
+
+    charsbase = chars.copy()
 
     for char in string1:
         if char in chars:
-            chars[char] -= 1
+            chars.subtract(char)
             encountered.put(char)
-            if chars[char] >= 0:
+            count = chars.get(char)
+            if count != None and count >= 0:
                 matches += 1
             if matches == len2:
                 totalcount += 1
                 matches -= 1
                 dequeueInto(encountered,chars)
         else:
-            while not encountered.empty():
-                dequeueInto(encountered,chars)
+            chars = charsbase.copy()
             matches = 0
     return totalcount
