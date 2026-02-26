@@ -4,12 +4,16 @@ from collections import Counter
 
 
 def countPermStr(string1: str, string2: str):
-    if string2 == "":
+    if string2 == "" or string1 is None or string2 is None:
+        raise ValueError()
+
+    str2len = len(string2)
+    if len(string1) < str2len:
         raise ValueError()
 
     for_success = Counter(string2)
     in_window = Counter()
-    left_window = len(string2) * -1
+    left_window = str2len * -1
     cur_matches = 0
     matches_for_full_perm = len(for_success)
     totalcount = 0
