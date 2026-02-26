@@ -31,5 +31,4 @@ def countPermStr(string1: str, string2: str):
         
         left_window += 1
 
-
     return totalcount
