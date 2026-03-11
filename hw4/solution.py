@@ -27,6 +27,7 @@ def getRadixes(list: list[HistoricNum], base: int) -> tuple[list[HistoricNum], .
 
     for num in list:
         quotient, divisor = divmod(num.cur_num, base)
+        print(f"divisor of {num.cur_num} is {divisor}")
         num.cur_num = divisor
         prefixes[quotient].append(num)
 
