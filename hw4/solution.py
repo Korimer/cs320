@@ -2,33 +2,44 @@
 
 
 from math import ceil, log
+from typing import override
 
 
 class HistoricNum:
     orig_num: int
     cur_num: int
-    def __init__(self, orig_num, cur_num):
+    def __init__(self, orig_num):
         self.orig_num = orig_num
-        self.cur_num = cur_num
+        self.cur_num = orig_num
+
+    def __repr__(self) -> str:
+        return f"HN({self.orig_num})"
+    
+    @override
+    def __str__(self) -> str:
+        return f"HistoricNum(cur: {self.cur_num}, orig: {self.orig_num})"
 
 
-def getRadixes(list: list[HistoricNum], base) -> tuple[list[HistoricNum], ...]:
+def getRadixes(list: list[HistoricNum], base: int) -> tuple[list[HistoricNum], ...]:
+    print(f"list is: {list}")
 
-    prefixes = tuple([[] for _ in range(base-1)])
+    prefixes = tuple([[] for _ in range(base)])
 
     for num in list:
         quotient, divisor = divmod(num.cur_num, base)
-        num.orig_num = divisor
+        num.cur_num = divisor
         prefixes[quotient].append(num)
+
+    print(f"returning list: {prefixes}")
 
     return prefixes
 
 
 def getMaxIterations(all_nums: list[int], base: int) -> int:
-    return ceil(log(max(all_nums), base)) -1
+    return ceil(log(max(all_nums), base))
 
 
-def radixHelper(numlist, base, iter_count):
+def radixHelper(numlist: list[HistoricNum], base: int, iter_count: int):
     if iter_count == 0: return numlist
     return [
         radixHelper(digit, base, iter_count-1)
@@ -47,9 +58,13 @@ def unfoldNTimes(list, times):
     return unfolded
 
 
-def radix_base(values_to_sort, base):
+def radix_base(values_to_sort: list[int], base: int):
     max_depth = getMaxIterations(values_to_sort, base)
-    sorted = radixHelper(values_to_sort, base, max_depth)
+    historicnums = [ HistoricNum(num) for num in values_to_sort ]
+    sorted = radixHelper(historicnums, base, max_depth)
+    print(sorted)
     unfolded = unfoldNTimes(sorted, max_depth)
-    sort_desc = unfolded[::-1]
-    return sort_desc
+    return unfolded
+
+
+print(radix_base([50,55,12,3,54],10))
