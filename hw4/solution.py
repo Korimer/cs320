@@ -4,7 +4,12 @@ from math import ceil, log
 
 
 def getMaxIterations(all_nums: list[int], base: int) -> int:
-    return ceil(log(max(all_nums) + 1, base))
+    max_num = max(all_nums)
+    iterations = 0
+    while max_num > 0:
+        iterations += 1
+        max_num = max_num // base
+    return iterations
 
 
 def radixHelper(numlist: list[int], base: int, iter_count: int):
