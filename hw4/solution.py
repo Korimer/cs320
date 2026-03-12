@@ -77,7 +77,7 @@ def radix_base(values_to_sort: list[int], base: int):
     if base <= 1 or not isinstance(base,int):
         raise ValueError()
     for val in values_to_sort:
-        if not isinstance(val,int):
+        if not isinstance(val,int) or val < 0:
             raise ValueError()
 
     max_depth = getMaxIterations(values_to_sort, base)
