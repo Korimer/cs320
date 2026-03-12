@@ -85,3 +85,6 @@ def radix_base(values_to_sort: list[int], base: int):
     sorted = radixHelper(historicnums, base, max_depth)
 
     return [h_num.orig_num for h_num in sorted]
+
+
+print(radix_base([1,32,46,43,24,634,2,321,4,634,27,458,7452,643,6,87,435,2345,34,634,54,52,34],10))
