@@ -39,15 +39,11 @@ class HistoricNum:
 
 
 def getRadixes(list: list[HistoricNum], base: int) -> tuple[list[HistoricNum], ...]:
-    print(f"list is: {list}")
-
     prefixes = tuple([[] for _ in range(base)])
 
     for h_num in list:
         quotient = h_num.nextDigit()
         prefixes[quotient].append(h_num)
-
-    print(f"returning list: {prefixes}")
 
     return prefixes
 
@@ -76,9 +72,15 @@ def unfoldNTimes(list, times) -> list[HistoricNum]:
 
 
 def radix_base(values_to_sort: list[int], base: int):
+    if base <= 2 or type(base) != "int":
+        raise ValueError()
+    for val in values_to_sort:
+        if type(val) != "int":
+            raise ValueError()
+
     max_depth = getMaxIterations(values_to_sort, base)
     historicnums = [ HistoricNum(num,max_depth,base) for num in values_to_sort ]
     sorted = radixHelper(historicnums, base, max_depth)
-    print(sorted)
     unfolded = unfoldNTimes(sorted, max_depth)
+
     return [ h_num.orig_num for h_num in unfolded ]
