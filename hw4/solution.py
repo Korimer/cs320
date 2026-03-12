@@ -49,7 +49,7 @@ def getRadixes(list: list[HistoricNum], base: int) -> tuple[list[HistoricNum], .
 
 
 def getMaxIterations(all_nums: list[int], base: int) -> int:
-    return ceil(log(max(all_nums), base))
+    return ceil(log(max(all_nums)+1, base))
 
 
 def radixHelper(numlist: list[HistoricNum], base: int, iter_count: int):
