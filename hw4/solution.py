@@ -75,7 +75,7 @@ def radix_base(values_to_sort: list[int], base: int):
     if base <= 2 or not isinstance(base,int):
         raise ValueError()
     for val in values_to_sort:
-        if isinstance(val,int):
+        if not isinstance(val,int):
             raise ValueError()
 
     max_depth = getMaxIterations(values_to_sort, base)
@@ -84,3 +84,6 @@ def radix_base(values_to_sort: list[int], base: int):
     unfolded = unfoldNTimes(sorted, max_depth)
 
     return [ h_num.orig_num for h_num in unfolded ]
+
+
+print(radix_base([100,30,21,5,324,3,43],10))
