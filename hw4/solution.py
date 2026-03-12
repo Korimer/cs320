@@ -33,8 +33,8 @@ class HistoricNum:
 
     @override
     def __str__(self) -> str:
-        return (f"HistoricNum(digit {self.cur_exponent}"
-            + f"of digits {self.all_digits}."
+        return (f"HistoricNum(digit {self.cur_exponent} "
+            + f"of digits {self.all_digits}. "
             + f"Base number {self.orig_num})"
             )
 
@@ -55,11 +55,12 @@ def getMaxIterations(all_nums: list[int], base: int) -> int:
 
 def radixHelper(numlist: list[HistoricNum], base: int, iter_count: int):
     if iter_count == 0: return numlist
-    return [
-        radixHelper(digit, base, iter_count-1)
-        for digit in getRadixes(numlist, base)
-    ]
-
+    
+    # ok so it turns out having a list depth equal to log(max,base) is NOT good for optimization
+    tiered_sorted = []
+    for tier in getRadixes(numlist,base):
+        tiered_sorted.extend(radixHelper(tier, base, iter_count-1))
+    return tiered_sorted
 
 def unfoldNTimes(list, times) -> list[HistoricNum]:
     unfolded = list
@@ -73,7 +74,7 @@ def unfoldNTimes(list, times) -> list[HistoricNum]:
 
 
 def radix_base(values_to_sort: list[int], base: int):
-    if base <= 2 or not isinstance(base,int):
+    if base <= 1 or not isinstance(base,int):
         raise ValueError()
     for val in values_to_sort:
         if not isinstance(val,int):
@@ -82,9 +83,5 @@ def radix_base(values_to_sort: list[int], base: int):
     max_depth = getMaxIterations(values_to_sort, base)
     historicnums = [ HistoricNum(num,max_depth,base) for num in values_to_sort ]
     sorted = radixHelper(historicnums, base, max_depth)
-    unfolded = unfoldNTimes(sorted, max_depth)
 
-    return [h_num.orig_num for h_num in unfolded]
-
-
-print(radix_base([100,30,21,5,324,3,43],10))
+    return [h_num.orig_num for h_num in sorted]
