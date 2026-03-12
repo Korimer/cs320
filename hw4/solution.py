@@ -12,7 +12,7 @@ class HistoricNum:
 
     def __init__(self, orig_num, max_digits, base):
         self.orig_num = orig_num
-        self.all_digits = [ 0 for _ in range(max_digits) ]
+        self.all_digits = [0 for _ in range(max_digits)]
         self.cur_exponent = 0
 
         cur_num = orig_num
@@ -22,7 +22,6 @@ class HistoricNum:
             cur_num = dividend
             self.all_digits[exponent] = remainder
             exponent -= 1
-
 
     def nextDigit(self) -> int:
         self.cur_exponent += 1
@@ -83,7 +82,7 @@ def radix_base(values_to_sort: list[int], base: int):
     sorted = radixHelper(historicnums, base, max_depth)
     unfolded = unfoldNTimes(sorted, max_depth)
 
-    return [ h_num.orig_num for h_num in unfolded ]
+    return [h_num.orig_num for h_num in unfolded]
 
 
 print(radix_base([100,30,21,5,324,3,43],10))
