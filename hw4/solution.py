@@ -6,18 +6,36 @@ from typing import override
 
 
 class HistoricNum:
+    cur_exponent: int
+    all_digits: list[int]
     orig_num: int
-    cur_num: int
-    def __init__(self, orig_num):
-        self.orig_num = orig_num
-        self.cur_num = orig_num
 
+    def __init__(self, orig_num, max_digits, base):
+        self.orig_num = orig_num
+        self.all_digits = [ 0 for _ in range(max_digits) ]
+        self.cur_exponent = 0
+
+        cur_num = orig_num
+        exponent = max_digits - 1
+        while cur_num > 0:
+            dividend, remainder = divmod(cur_num, base)
+            cur_num = dividend
+            self.all_digits[exponent] = remainder
+            exponent -= 1
+
+
+    def nextDigit(self) -> int:
+        self.cur_exponent += 1
+        return self.all_digits[self.cur_exponent-1]
+
+    @override
     def __repr__(self) -> str:
         return f"HN({self.orig_num})"
+
     
     @override
     def __str__(self) -> str:
-        return f"HistoricNum(cur: {self.cur_num}, orig: {self.orig_num})"
+        return f"HistoricNum(digit {self.cur_exponent} of digits {self.all_digits}. Base number {self.orig_num})"
 
 
 def getRadixes(list: list[HistoricNum], base: int) -> tuple[list[HistoricNum], ...]:
@@ -25,11 +43,9 @@ def getRadixes(list: list[HistoricNum], base: int) -> tuple[list[HistoricNum], .
 
     prefixes = tuple([[] for _ in range(base)])
 
-    for num in list:
-        quotient, divisor = divmod(num.cur_num, base)
-        print(f"divisor of {num.cur_num} is {divisor}")
-        num.cur_num = divisor
-        prefixes[quotient].append(num)
+    for h_num in list:
+        quotient = h_num.nextDigit()
+        prefixes[quotient].append(h_num)
 
     print(f"returning list: {prefixes}")
 
@@ -61,7 +77,7 @@ def unfoldNTimes(list, times):
 
 def radix_base(values_to_sort: list[int], base: int):
     max_depth = getMaxIterations(values_to_sort, base)
-    historicnums = [ HistoricNum(num) for num in values_to_sort ]
+    historicnums = [ HistoricNum(num,max_depth,base) for num in values_to_sort ]
     sorted = radixHelper(historicnums, base, max_depth)
     print(sorted)
     unfolded = unfoldNTimes(sorted, max_depth)
