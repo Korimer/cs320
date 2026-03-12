@@ -72,10 +72,10 @@ def unfoldNTimes(list, times) -> list[HistoricNum]:
 
 
 def radix_base(values_to_sort: list[int], base: int):
-    if base <= 2 or type(base) != "int":
+    if base <= 2 or not isinstance(base,int):
         raise ValueError()
     for val in values_to_sort:
-        if type(val) != "int":
+        if isinstance(val,int):
             raise ValueError()
 
     max_depth = getMaxIterations(values_to_sort, base)
