@@ -64,7 +64,7 @@ def radixHelper(numlist: list[HistoricNum], base: int, iter_count: int):
     ]
 
 
-def unfoldNTimes(list, times):
+def unfoldNTimes(list, times) -> list[HistoricNum]:
     unfolded = list
     for _ in range(times):
         unfolded = [
@@ -81,7 +81,4 @@ def radix_base(values_to_sort: list[int], base: int):
     sorted = radixHelper(historicnums, base, max_depth)
     print(sorted)
     unfolded = unfoldNTimes(sorted, max_depth)
-    return unfolded
-
-
-print(radix_base([50,55,12,3,54],10))
+    return [ h_num.orig_num for h_num in unfolded ]
