@@ -31,10 +31,12 @@ class HistoricNum:
     def __repr__(self) -> str:
         return f"HN({self.orig_num})"
 
-    
     @override
     def __str__(self) -> str:
-        return f"HistoricNum(digit {self.cur_exponent} of digits {self.all_digits}. Base number {self.orig_num})"
+        return (f"HistoricNum(digit {self.cur_exponent}"
+            + f"of digits {self.all_digits}."
+            + f"Base number {self.orig_num})"
+            )
 
 
 def getRadixes(list: list[HistoricNum], base: int) -> tuple[list[HistoricNum], ...]:
