@@ -133,10 +133,3 @@ class CuckooSet(Collection):
             return True
         else:
             return False
-
-lol = CuckooSet(s=5)
-for i in range(200):
-    lol.add(i)
-
-for i in range(200):
-    lol.remove(i)
