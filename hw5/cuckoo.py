@@ -100,21 +100,22 @@ class CuckooSet(Collection):
                 self._resize_()
                 swapcount = 0
             h1, h2 = self._hash2_(target, self._size_)
-            if self.htab1[h1] is None:
-                self.htab1[h1] = target
-                is_not_added = False
-            elif self.htab2[h2] is None:
-                self.htab2[h2] = target
+            if array_oscilator:
+                arr_target = self.htab1
+                arr_pos = h1
+            else:
+                arr_target = self.htab2
+                arr_pos = h2
+
+            if arr_target[arr_pos] is None:
+                arr_target[arr_pos] = target
                 is_not_added = False
             else:
                 old_target = target
-                if array_oscilator:
-                    target = self.htab1[h1]
-                    self.htab1[h1] = old_target
-                else:
-                    target = self.htab2[h2]
-                    self.htab2[h2] = old_target
-                array_oscilator = not array_oscilator
+                target = arr_target[arr_pos]
+                arr_target[arr_pos] = old_target
+
+            array_oscilator = not array_oscilator
             swapcount += 1
 
     def remove(self, x):
