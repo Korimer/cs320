@@ -1,3 +1,4 @@
+# pyright: basic
 from collections.abc import Collection
 from math import e, modf, floor, sqrt
 from itertools import filterfalse, chain
@@ -78,6 +79,8 @@ class CuckooSet(Collection):
 # ******* THIS IS LINE Y ******************
 
     def __contains__(self, x) -> bool:
+        if x is None:
+            raise ValueError("key may not be None")
         h1, h2 = self._hash2_(x, self._size_)
         return self.htab1[h1] == x or self.htab2[h2] == x
 
@@ -85,28 +88,55 @@ class CuckooSet(Collection):
         if x is None:
             raise ValueError("key may not be None")
 
+        if x in self:
+            return
+
         swapcount = 0
         is_not_added = True
         target = x
+        array_oscilator = True
         while is_not_added:
             if swapcount >= self._MAXSWAPS_:
                 self._resize_()
-            h1, h2 = self._hash2_(x, self._size_)
+                swapcount = 0
+            h1, h2 = self._hash2_(target, self._size_)
             if self.htab1[h1] is None:
-                self.htab1[h1] = x
+                self.htab1[h1] = target
                 is_not_added = False
             elif self.htab2[h2] is None:
-                self.htab2[h2] = x
+                self.htab2[h2] = target
                 is_not_added = False
             else:
                 old_target = target
-                target = self.htab1[h1]
-                self.htab1[h1] = old_target
+                if array_oscilator:
+                    target = self.htab1[h1]
+                    self.htab1[h1] = old_target
+                else:
+                    target = self.htab2[h2]
+                    self.htab2[h2] = old_target
+                array_oscilator = not array_oscilator
             swapcount += 1
 
     def remove(self, x):
         if not self.discard(x):
-            raise ValueError("key may not be None")
+            raise ValueError()
 
     def discard(self, x) -> bool:
-        return False
+        if x is None:
+            raise ValueError("key may not be None")
+        h1, h2 = self._hash2_(x, self._size_)
+        if self.htab1[h1] == x:
+            self.htab1[h1] = None
+            return True
+        elif self.htab2[h2] == x:
+            self.htab2[h2] = None
+            return True
+        else:
+            return False
+
+lol = CuckooSet(s=5)
+for i in range(200):
+    lol.add(i)
+
+for i in range(200):
+    lol.remove(i)
