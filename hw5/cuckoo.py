@@ -2,6 +2,7 @@ from collections.abc import Collection
 from math import e, modf, floor, sqrt
 from itertools import filterfalse, chain
 from copy import copy
+from typing import override
 import unittest
 
 
@@ -77,3 +78,15 @@ class CuckooSet(Collection):
     def __iter__(self):
         return self._allmembers_()
 # ******* THIS IS LINE Y ******************
+
+    def __contains__(self, x: object, /) -> bool:
+        return False
+
+    def add(self, x):
+        return None
+
+    def remove(self, x):
+        return None
+
+    def discard(self, x):
+        return None
