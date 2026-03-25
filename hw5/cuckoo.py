@@ -87,6 +87,7 @@ class CuckooSet(Collection):
 
         swapcount = 0
         is_not_added = True
+        target = x
         while is_not_added:
             if swapcount >= self._MAXSWAPS_:
                 self._resize_()
@@ -97,6 +98,10 @@ class CuckooSet(Collection):
             elif self.htab2[h2] is None:
                 self.htab2[h2] = x
                 is_not_added = False
+            else:
+                old_target = target
+                target = self.htab1[h1]
+                self.htab1[h1] = old_target
             swapcount += 1
 
     def remove(self, x):
