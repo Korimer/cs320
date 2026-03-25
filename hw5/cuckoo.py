@@ -2,8 +2,6 @@ from collections.abc import Collection
 from math import e, modf, floor, sqrt
 from itertools import filterfalse, chain
 from copy import copy
-from typing import override
-import unittest
 
 
 # DO NOT CHANGE ANY CODE BETWEEN LINE X AND LINE Y
@@ -79,14 +77,31 @@ class CuckooSet(Collection):
         return self._allmembers_()
 # ******* THIS IS LINE Y ******************
 
-    def __contains__(self, x: object, /) -> bool:
-        return False
+    def __contains__(self, x) -> bool:
+        h1, h2 = self._hash2_(x, self._size_)
+        return self.htab1[h1] == x or self.htab2[h2] == x
 
     def add(self, x):
-        return None
+        if x is None:
+            raise ValueError("key may not be None")
+
+        swapcount = 0
+        is_not_added = True
+        while is_not_added:
+            if swapcount >= self._MAXSWAPS_:
+                self._resize_()
+            h1, h2 = self._hash2_(x, self._size_)
+            if self.htab1[h1] is None:
+                self.htab1[h1] = x
+                is_not_added = False
+            elif self.htab2[h2] is None:
+                self.htab2[h2] = x
+                is_not_added = False
+            swapcount += 1
 
     def remove(self, x):
-        return None
+        if not self.discard(x):
+            raise ValueError("key may not be None")
 
-    def discard(self, x):
-        return None
+    def discard(self, x) -> bool:
+        return False
