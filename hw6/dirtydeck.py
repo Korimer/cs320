@@ -36,18 +36,14 @@ class DirtyDeck(Container):
 
     def shuffle(self):
         self.deck = _full_deck_.copy()
-        if self.hidden is not None:
-            reserved_bottom = 4
-            num_hidden = 0
-        else:
-            reserved_bottom = 0
-        for upper_bound in range(self._deck_size-1,reserved_bottom-1,-1):
+        num_hidden = 0
+        for upper_bound in range(len(self.deck)):
             swapcard = self.deck[upper_bound]
             if swapcard.rank == self.hidden:
                 swaptarget = num_hidden
                 num_hidden += 1
             else:
-                swaptarget = random.randint(reserved_bottom,upper_bound)
+                swaptarget = random.randint(num_hidden,upper_bound)
             self.deck[upper_bound] = self.deck[swaptarget]
             self.deck[swaptarget] = swapcard
 
