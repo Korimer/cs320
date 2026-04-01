@@ -41,13 +41,13 @@ class DirtyDeck(Container):
             num_hidden = 0
         else:
             reserved_bottom = 0
-        for upper_bound in range(self._deck_size,reserved_bottom,-1):
+        for upper_bound in range(self._deck_size-1,reserved_bottom-1,-1):
             swapcard = self.deck[upper_bound]
             if swapcard.rank == self.hidden:
                 swaptarget = num_hidden
                 num_hidden += 1
             else:
-                swaptarget = random.randint(0,upper_bound)
+                swaptarget = random.randint(reserved_bottom,upper_bound)
             self.deck[upper_bound] = self.deck[swaptarget]
             self.deck[swaptarget] = swapcard
 
@@ -56,3 +56,8 @@ class DirtyDeck(Container):
         if len(self.deck) / self._deck_size < .25:
             raise ResourceWarning("low deck")
         return card
+
+lol = DirtyDeck(hide=10)
+lol.shuffle()
+for card in lol.deck:
+    print(card.rank)
