@@ -1,5 +1,5 @@
 #pyright: basic
-from playingcard import PlayingCard, CardSuit, _valid_rank_, _convert_to_rank
+from playingcard import PlayingCard, CardSuit, _valid_rank_, _convert_to_rank, _card_str_
 from collections.abc import Container
 import unittest
 import random
@@ -36,24 +36,24 @@ class DirtyDeck(Container):
 
     def shuffle(self):
         self.deck = _full_deck_.copy()
-        num_hidden = 0
-        for upper_bound in range(len(self.deck)):
-            swapcard = self.deck[upper_bound]
-            if swapcard.rank == self.hidden:
-                swaptarget = num_hidden
-                num_hidden += 1
-            else:
-                swaptarget = random.randint(num_hidden,upper_bound)
-            self.deck[upper_bound] = self.deck[swaptarget]
-            self.deck[swaptarget] = swapcard
+        to_hide = {}
+        for upper_bound in range(len(self.deck)-1,0,-1):
+            swapfrom = self.deck[upper_bound]
+            swaptarget = random.randint(0,upper_bound)
+            swapto = self.deck[swaptarget]
+            if swapfrom.rank == self.hidden:
+                to_hide[_card_str_(swapfrom)] = swaptarget
+            if swapto.rank == self.hidden:
+                to_hide[_card_str_(swapto)] = upper_bound
+            self.deck[upper_bound], self.deck[swaptarget] = swapto, swapfrom
+
+        i = 0
+        for location in to_hide.values():
+            self.deck[location], self.deck[i] = self.deck[i], self.deck[location]
+            i += 1
 
     def deal(self) -> PlayingCard:
         card = self.deck.pop()
         if len(self.deck) / self._deck_size < .25:
             raise ResourceWarning("low deck")
         return card
-
-lol = DirtyDeck(hide=10)
-lol.shuffle()
-for card in lol.deck:
-    print(card.rank)
