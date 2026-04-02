@@ -1,4 +1,4 @@
-#pyright: basic
+# pyright: basic
 from playingcard import PlayingCard, CardSuit, _valid_rank_, _convert_to_rank, _card_str_
 from collections.abc import Container
 import unittest
@@ -36,21 +36,13 @@ class DirtyDeck(Container):
 
     def shuffle(self):
         self.deck = _full_deck_.copy()
-        to_hide = {}
-        for upper_bound in range(len(self.deck)-1,0,-1):
-            swapfrom = self.deck[upper_bound]
-            swaptarget = random.randint(0,upper_bound)
-            swapto = self.deck[swaptarget]
-            if swapfrom.rank == self.hidden:
-                to_hide[_card_str_(swapfrom)] = swaptarget
-            if swapto.rank == self.hidden:
-                to_hide[_card_str_(swapto)] = upper_bound
-            self.deck[upper_bound], self.deck[swaptarget] = swapto, swapfrom
+        hidden = [ card for card in self.deck if card.rank == self.hidden ]
+        standard = [ card for card in self.deck if card.rank != self.hidden ]
+        for upper_bound in range(len(standard) - 1, 0, -1):
+            randint = random.randint(0,upper_bound)
+            standard[upper_bound], standard[randint] = standard[randint], standard[upper_bound]
+        self.deck = hidden + standard
 
-        i = 0
-        for location in to_hide.values():
-            self.deck[location], self.deck[i] = self.deck[i], self.deck[location]
-            i += 1
 
     def deal(self) -> PlayingCard:
         card = self.deck.pop()
