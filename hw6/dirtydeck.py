@@ -36,13 +36,13 @@ class DirtyDeck(Container):
 
     def shuffle(self):
         self.deck = _full_deck_.copy()
-        hidden = [ card for card in self.deck if card.rank == self.hidden ]
-        standard = [ card for card in self.deck if card.rank != self.hidden ]
+        hidden = [card for card in self.deck if card.rank == self.hidden]
+        standard = [card for card in self.deck if card.rank != self.hidden]
+        # Reference: the slides from abt a week ago
         for upper_bound in range(len(standard) - 1, 0, -1):
-            randint = random.randint(0,upper_bound)
+            randint = random.randint(0, upper_bound)
             standard[upper_bound], standard[randint] = standard[randint], standard[upper_bound]
         self.deck = hidden + standard
-
 
     def deal(self) -> PlayingCard:
         card = self.deck.pop()
