@@ -42,7 +42,7 @@ class DirtyDeck(Container):
         for upper_bound in range(len(standard) - 1, 0, -1):
             randint = random.randint(0, upper_bound)
             standard[upper_bound], standard[randint] = standard[randint], standard[upper_bound]
-        self.deck = hidden + standard
+        self.deck = standard + hidden
 
     def deal(self) -> PlayingCard:
         card = self.deck.pop()
