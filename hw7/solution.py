@@ -7,5 +7,8 @@ def bfs(graph: edgegraph.GraphEL, start: edgegraph.VertexEL) -> list:
     tovisit = {start}
     next = set()
 
-    while len(tovisit) != False:
-        pass
+    while len(tovisit) != 0:
+        for nodename in tovisit:
+            pass
+        tovisit = next
+    return []
