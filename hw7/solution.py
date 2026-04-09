@@ -27,7 +27,8 @@ def bfs(graph: edgegraph.GraphEL, start: edgegraph.VertexEL) -> list:
                 if connectednode not in connections and connectednode not in visited:
                     connections.add(connectednode)
                     ordered_connections.put(connectednode)
+        
+        tovisit = ordered_connections
 
-            tovisit = ordered_connections
                     
-    return []
+    return searchresults
