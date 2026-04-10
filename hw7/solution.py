@@ -17,6 +17,7 @@ def bfs(graph: edgegraph.GraphEL, start: edgegraph.VertexEL) -> list:
     searchresults = []
 
     tovisit.append(start)
+    visited.add(start)
 
     while len(tovisit) != 0:
         searchresults.append(tuple(tovisit))
@@ -25,15 +26,12 @@ def bfs(graph: edgegraph.GraphEL, start: edgegraph.VertexEL) -> list:
         ordered_connections = deque()
         while len(tovisit) != 0:
             nextnode = tovisit.popleft()
-            if nextnode in visited:
-                continue
-
-            visited.add(nextnode)
 
             all_connections = graph.adjacent(nextnode)
 
             for connectednode in all_connections:
                 if connectednode not in connections and connectednode not in visited:
+                    visited.add(connectednode)
                     connections.add(connectednode)
                     ordered_connections.append(connectednode)
             
