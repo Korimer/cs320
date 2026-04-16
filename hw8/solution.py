@@ -2,6 +2,7 @@
 
 from collections import Counter
 from copy import deepcopy
+from typing import Optional
 
 from edgegraph import *
 
@@ -11,15 +12,14 @@ class PalindromeTraversal:
     def __init__(self, graph: GraphEL) -> None:
         self.graph: GraphEL = graph
         self.verticies: list[VertexEL] = graph.vertices()
-        self.vremaining: Counter[VertexEL] = Counter(self.verticies)
-        self.vvisited: Counter[VertexEL] = Counter()
+        vertexvalues = [edge.tail().get_value() for edge in graph.edges()]
+        self.vremaining: Counter = Counter(vertexvalues)
         self.visited: set[EdgeEL] = set()
         self.curroute: list[EdgeEL] = []
         self.palindromes: list[list] = []
 
 
     def _visit(self, vert: VertexEL) -> None:
-
         self.vremaining.subtract([vert])
 
         if self.isPalindrome():
@@ -30,11 +30,12 @@ class PalindromeTraversal:
             if v_adjacent not in self.visited
         ]
 
+        valid_followups = self.canCreatePalindromeWith()
         for adjacent in unvisited_connections:
-            self._visit(adjacent)
+            if valid_followups is None or adjacent.get_value() in valid_followups:
+                self._visit(adjacent)
 
         self.vremaining.update([vert])
-
 
     def isPalindrome(self) -> bool:
         if len(self.curroute) < 3:
@@ -46,11 +47,8 @@ class PalindromeTraversal:
 
         return True
 
-    def canCreatePalindrome(self):
-        for key in self.vvisited.keys():
-            if self.vremaining.get(key) == 0:
-                return False
-        return True
+    def canCreatePalindromeWith(self) -> Optional[set]:
+        return set()
 
 
 
