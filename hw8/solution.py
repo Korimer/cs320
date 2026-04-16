@@ -1,7 +1,6 @@
 # pyright: basic
 
 from collections import Counter
-from copy import deepcopy
 from typing import Optional
 
 from edgegraph import *
@@ -16,19 +15,19 @@ class PalindromeTraversal:
         self.vremaining: Counter = Counter(vertexvalues)
         self.visited: set[EdgeEL] = set()
         self.curroute: list[EdgeEL] = []
-        self.palindromes: list[tuple[int, ...]] = []
+        self.palindromes: set[tuple[int, ...]] = set()
 
     def getAllPalindromes(self) -> list[tuple[int, ...]]:
         for vert in self.verticies:
             self._visit(vert)
-        return self.palindromes
+        return list(self.palindromes)
 
     def _visit(self, vert: VertexEL) -> None:
         self.vremaining.subtract([vert])
 
         if self.isPalindrome():
             edgevals = [edge.get_value() for edge in self.curroute]
-            self.palindromes.append(tuple(edgevals))
+            self.palindromes.add(tuple(edgevals))
 
         unvisited_connections = [
             v_adjacent for v_adjacent in self.graph.incident(vert)
@@ -58,6 +57,7 @@ class PalindromeTraversal:
 
     def canCreatePalindromeWith(self) -> Optional[set]:
         return set()
+
 
 def pld_graph(graph: Optional[GraphEL]) -> list[tuple]:
     if graph is None:
