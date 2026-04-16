@@ -48,9 +48,6 @@ class PalindromeTraversal:
 
         return edgevals == edgevals[::-1]
 
-    def canCreatePalindromeWith(self) -> Optional[set]:
-        return set()
-
 
 def pld_graph(graph: Optional[GraphEL]) -> list[tuple]:
     if graph is None:
